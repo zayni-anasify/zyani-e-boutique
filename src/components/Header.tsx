@@ -8,10 +8,10 @@ const Header = () => {
   const navItems = [
     { name: 'Home', href: '#home' },
     { name: 'Popular', href: '#popular' },
-    { name: 'Cotton Sarees', href: '#cotton' },
+    { name: 'All Products', href: '/products' },
     { name: 'FAQs', href: '#faqs' },
     { name: 'Contact', href: '#contact' },
-    { name: 'About Brand', href: '#about' },
+    { name: 'Admin', href: '/admin/login' },
   ];
 
   useEffect(() => {
@@ -37,11 +37,15 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const scrollToSection = (href: string) => {
-    const targetId = href.substring(1);
-    const element = document.getElementById(targetId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+  const handleNavigation = (href: string) => {
+    if (href.startsWith('#')) {
+      const targetId = href.substring(1);
+      const element = document.getElementById(targetId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      window.location.href = href;
     }
     setIsMenuOpen(false);
   };
@@ -62,9 +66,10 @@ const Header = () => {
             {navItems.map((item) => (
               <button
                 key={item.name}
-                onClick={() => scrollToSection(item.href)}
+                onClick={() => handleNavigation(item.href)}
                 className={`font-inter font-medium transition-colors duration-300 hover:text-primary ${
-                  activeSection === item.href.substring(1)
+                  (item.href.startsWith('#') && activeSection === item.href.substring(1)) ||
+                  (item.href.startsWith('/') && window.location.pathname === item.href)
                     ? 'text-primary border-b-2 border-primary'
                     : 'text-foreground'
                 }`}
@@ -95,9 +100,10 @@ const Header = () => {
             {navItems.map((item) => (
               <button
                 key={item.name}
-                onClick={() => scrollToSection(item.href)}
+                onClick={() => handleNavigation(item.href)}
                 className={`block w-full text-left py-3 font-inter font-medium transition-colors duration-300 hover:text-primary ${
-                  activeSection === item.href.substring(1)
+                  (item.href.startsWith('#') && activeSection === item.href.substring(1)) ||
+                  (item.href.startsWith('/') && window.location.pathname === item.href)
                     ? 'text-primary'
                     : 'text-foreground'
                 }`}
